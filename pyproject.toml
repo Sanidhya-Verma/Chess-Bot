@@ -17,3 +17,4 @@ dev=["pytest","ruff"]
 packages = ["src/chessbot"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+license = "MIT"
