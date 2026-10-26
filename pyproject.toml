@@ -1,0 +1,19 @@
+[build-system]
+requires=["hatchling"]
+build-backend="hatchling.build"
+[project]
+name="chess-bot"
+version="0.0.1"
+description="Chess bot based on mcts and minimax+alpha beta pruning"
+dependencies=[
+    "chess>=1.11.0",
+    "numpy",
+]
+requires-python=">=3.10"
+[project.optional-dependencies]
+ml=["torch"]
+dev=["pytest","ruff"]
+[tool.hatch.build.targets.wheel]
+packages = ["src/chessbot"]
+[tool.pytest.ini_options]
+testpaths = ["tests"]
