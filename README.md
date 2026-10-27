@@ -17,3 +17,4 @@ Current dependencies:
     Pygments  2.21.0
     pytest    9.1.1
     ruff      0.17.2
+Evaluation is from white's prespective
