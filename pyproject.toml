@@ -8,6 +8,8 @@ description="Chess bot based on mcts and minimax+alpha beta pruning"
 dependencies=[
     "chess>=1.11.0",
     "numpy",
+    "fastapi",
+    "uvicorn[standard]",
 ]
 requires-python=">=3.10"
 [project.optional-dependencies]
