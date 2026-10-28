@@ -1,7 +1,7 @@
 ## Backend testing
 Added tests in:
-- tests/test_evaluation.py — 8 tests
-- tests/test_api.py — 5 tests
+- tests/backend/test_evaluation.py — 8 tests
+- tests/backend/test_api.py — 5 tests
 
 ### Evaluation checks:
 - Starting position scores zero.
@@ -20,7 +20,7 @@ Added tests in:
 - Board endpoint correctly reports stalemate.
 
 ### Run these test on Windows terminal
-.venv\Scripts\python.exe -m pytest tests/test_evaluation.py tests/test_api.py -v
+.venv\Scripts\python.exe -m pytest tests/backend -v
 
 ### Latest result : 13 passed, 2 warnings
 
@@ -29,3 +29,6 @@ Pytest reports "Unknown config option: license".
 The license entry is currently under the pytest configuration section.
 
 Engine benchmarking has not been performed yet.
+
+Detailed test results at tests/backend/results.txt
+
