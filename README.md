@@ -18,3 +18,8 @@ Current dependencies:
     pytest    9.1.1
     ruff      0.17.2
 Evaluation is from white's prespective
+
+FastApi:
+    uv run uvicorn chessbot.api:app -- reload --app-dir src
+    "Open in seperate terminal for local host"
+    
