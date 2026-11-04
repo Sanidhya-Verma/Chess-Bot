@@ -1,6 +1,7 @@
 import math
 import chess
 
+
 class MCTSNode:
     def __init__(self, board, parent=None, move=None, prior=0.0):
         self.board = board
