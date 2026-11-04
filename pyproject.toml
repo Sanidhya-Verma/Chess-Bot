@@ -14,7 +14,7 @@ dependencies=[
 requires-python=">=3.10"
 [project.optional-dependencies]
 ml=["torch"]
-dev=["pytest","ruff"]
+dev=["pytest","ruff","httpx==0.28.1"]
 [tool.hatch.build.targets.wheel]
 packages = ["src/chessbot"]
 [tool.pytest.ini_options]
