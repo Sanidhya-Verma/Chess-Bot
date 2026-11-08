@@ -43,10 +43,11 @@ class MCTSNode:
             raise ValueError("Cannot expand a terminal node")
 
         if self.is_fully_expanded:
+            
             raise ValueError("Node has no untried moves")
 
         move = self.untried_moves.pop()
-        next_board = self.board.copy()
+        next_board = self.board.copy(stack = False)
         next_board.push(move)
         child = MCTSNode(next_board, parent=self, move=move, prior=prior)
         self.children.append(child)
