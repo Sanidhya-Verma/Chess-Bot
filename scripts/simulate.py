@@ -29,6 +29,7 @@ def run_game(seed,move_limit = 300):
         "individual_moves": moves_played,
         "white_seconds": thinking_time["White"],
         "black_seconds": thinking_time["Black"],
+        "final_fen": game.snapshot()["fen"],
     }
 
 def main():
