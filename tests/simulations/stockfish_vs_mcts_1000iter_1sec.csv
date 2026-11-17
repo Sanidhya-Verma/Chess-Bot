@@ -1,0 +1,3 @@
+game,seed,mcts_iterations_limit,mcts_time_limit_seconds,white_player,black_player,result,winner,reason,individual_moves,move_limit,white_moves,black_moves,white_seconds,black_seconds,final_fen,stockfish_version,stockfish_seconds_per_move,stockfish_threads,stockfish_hash_mb,stockfish_skill_level,claim_draw
+1,1,1000,1.0,stockfish,mcts,White,stockfish,CHECKMATE,27,300,14,13,1.3426622000406496,12.821181200037245,1nbqkb2/r2pp3/4P3/1BpP1pBQ/8/2N2N2/PpP2KPP/R6R b - - 0 14,Stockfish 19,0.1,1,64,20,True
+2,2,1000,1.0,mcts,stockfish,Black,stockfish,CHECKMATE,42,300,21,21,21.0208635001909,1.9360788999474607,r1b1k2r/pp1p1ppp/4p3/PP6/2Pn2nP/8/8/2q1K1NR w kq - 3 22,Stockfish 19,0.1,1,64,20,True

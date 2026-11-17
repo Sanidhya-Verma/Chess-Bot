@@ -1,0 +1,3 @@
+game,seed,alpha_beta_depth,white_player,black_player,result,winner,reason,individual_moves,move_limit,white_moves,black_moves,white_seconds,black_seconds,final_fen,stockfish_version,stockfish_seconds_per_move,stockfish_threads,stockfish_hash_mb,stockfish_skill_level,claim_draw
+1,1,5,stockfish,alpha_beta,White,stockfish,CHECKMATE,51,300,26,25,2.4643527998705395,437.1833021999919,2k4r/p2Q2pp/p2B1N2/2q2pN1/6n1/P7/2P2PPP/4R1K1 b - - 0 26,Stockfish 19,0.1,1,64,20,True
+2,2,5,alpha_beta,stockfish,Black,stockfish,CHECKMATE,46,300,23,23,259.3889747997746,2.1974948999122716,2k1r2r/ppp2pp1/2P5/3p3p/8/5nP1/P2PpNR1/RNB1K3 w - - 1 24,Stockfish 19,0.1,1,64,20,True
