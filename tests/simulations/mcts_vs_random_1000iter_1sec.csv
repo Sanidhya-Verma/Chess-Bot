@@ -1,0 +1,3 @@
+game,seed,white_player,black_player,result,winner,reason,individual_moves,move_limit,white_moves,black_moves,white_seconds,black_seconds,mcts_iterations_limit,mcts_time_limit_seconds,final_fen,claim_draw
+1,1,mcts,random,White,mcts,CHECKMATE,9,300,5,4,4.090534700022545,0.00023249996593222022,1000,1.0,1rbqkbnr/pppppQ2/2n3pp/8/2B1P3/8/PPPP1PPP/RNB1K1NR b KQk - 0 5,True
+2,2,random,mcts,Draw,Draw,THREEFOLD_REPETITION,139,300,70,69,0.0021785999997518957,66.60825099988142,1000,1.0,1n2k1n1/8/8/8/8/8/K7/7r b - - 14 70,True
