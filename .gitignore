@@ -7,4 +7,7 @@ __pycache__/
 *.py[cod]
 
 # Editor
-.vscode/
+.vscode/.venv/
+
+.venv/
+scripts/play_mcts.py
