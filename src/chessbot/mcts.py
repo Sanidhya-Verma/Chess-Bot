@@ -1,5 +1,8 @@
 import math
 import chess
+import time
+
+from chessbot.evaluation import evaluate   
 
 
 class MCTSNode:
@@ -14,8 +17,8 @@ class MCTSNode:
 
 # like if prior is 0.0 and we have less iteration, then lot of time waste still guess it's best to put capture and check moves first in the
 #  untried moves list so that they are explored first and then the other moves are explored later. This is because 
-# capture and are more likely to be good moves So expore them firsr later we use pop and pop takes the last element out.
-        self.untried_moves = sorted(
+# capture and are more likely to be good moves So expore them first later we use pop and pop takes the last element out.
+        self.untried_moves = sorted(    
             board.legal_moves,
             key=lambda m: (board.is_capture(m), board.gives_check(m))
         )
@@ -102,3 +105,53 @@ class MCTSNode:
 
             current_result = -current_result
             node = node.parent
+
+def move_prior(board, move):
+    prior = 0.0
+    if board.is_capture(move):
+        prior += 0.5
+    if board.gives_check(move):
+        prior += 0.3
+    return prior
+
+def simulate(board):
+    """Value of the position for White, in [-1, 1]."""
+    if board.is_checkmate():
+        return -1.0 if board.turn == chess.WHITE else 1.0
+    if board.is_game_over(claim_draw=True):
+        return 0.0
+    return math.tanh(evaluate(board) / 400)
+
+def mcts_search(board, iterations=1000, time_limit=None):
+    if iterations < 1:
+        raise ValueError("Iterations must be at least 1")
+
+    root = MCTSNode(board.copy(stack=False))
+    if root.is_terminal:
+        return None
+
+    start = time.monotonic()
+    for i in range(iterations):
+        if i > 0 and time_limit is not None and time.monotonic() - start >= time_limit:
+            break
+
+        # 1. Selection
+        node = root
+        while not node.is_terminal and node.is_fully_expanded:
+            node = node.select_child()
+
+        # 2. Expansion
+        if not node.is_terminal:
+            prior = move_prior(node.board, node.untried_moves[-1])
+            node = node.expand(prior=prior)
+
+        # 3. Simulation 
+        white_value = simulate(node.board)
+
+        # 4. Backpropagation 
+        result = white_value if node.board.turn == chess.BLACK else -white_value
+        node.backpropagate(result)
+
+    return max(root.children, key=lambda child: child.visits).move
+
+
