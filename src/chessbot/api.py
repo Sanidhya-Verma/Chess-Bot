@@ -5,9 +5,11 @@ import chess
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
+from typing import Literal
 
 from chessbot.evaluation import evaluate
 from chessbot.alpha_beta import alpha_beta_search
+from chessbot.mcts import mcts_search
 
 
 # --------------------------------------------------
@@ -37,6 +39,8 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",
         "http://127.0.0.1:5173",
+        "http://localhost:5174",
+        "http://127.0.0.1:5174",
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -59,10 +63,16 @@ class PositionRequest(BaseModel):
     )
 
 class BestMoveRequest(BaseModel):
-    fen: str = Field(
-        default="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-    )
+    fen: str = Field(default=DEFAULT_FEN)
+
+    algorithm: Literal["alpha_beta", "mcts"] = "alpha_beta"
+
+    # Alpha-Beta settings
     depth: int = Field(default=3, ge=1, le=5)
+
+    # MCTS settings
+    iterations: int = Field(default=1000, ge=1, le=100000)
+    time_limit: float = Field(default=1.0, gt=0, le=10)
 
 # --------------------------------------------------
 # Helper Functions
@@ -259,13 +269,47 @@ def get_best_move(request: BestMoveRequest):
             detail="Game is already over."
         )
 
-    result = alpha_beta_search(board, depth=request.depth)
+    # Alpha-Beta engine
+    if request.algorithm == "alpha_beta":
 
-    return {
-        "best_move": result.best_move.uci(),
-        "score": result.score,
-        "depth": request.depth,
-        "nodes_searched": result.nodes_searched,
-        "leaves_evaluated": result.leaves_evaluated,
-        "cutoffs": result.cutoffs
-    }
+        result = alpha_beta_search(
+            board,
+            depth=request.depth
+        )
+
+        return {
+            "algorithm": "alpha_beta",
+            "best_move": result.best_move.uci(),
+            "score": result.score,
+            "depth": request.depth,
+            "nodes_searched": result.nodes_searched,
+            "leaves_evaluated": result.leaves_evaluated,
+            "cutoffs": result.cutoffs
+        }
+
+    # MCTS engine
+    elif request.algorithm == "mcts":
+
+        best_move = mcts_search(
+            board,
+            iterations=request.iterations,
+            time_limit=request.time_limit
+        )
+
+        if best_move is None or best_move not in board.legal_moves:
+            raise HTTPException(
+                status_code=500,
+                detail="MCTS failed to generate a valid move."
+            )
+
+        return {
+            "algorithm": "mcts",
+            "best_move": best_move.uci(),
+            "score": None,
+            "depth": None,
+            "nodes_searched": None,
+            "leaves_evaluated": None,
+            "cutoffs": None,
+            "iterations": request.iterations,
+            "time_limit": request.time_limit
+        }
