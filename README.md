@@ -20,7 +20,7 @@ Current dependencies:
 Evaluation is from white's prespective
 
 FastApi:
-    uv run uvicorn chessbot.api:app -- reload --app-dir src
+    uv run uvicorn chessbot.api:app -- reload
     "Open in seperate terminal for local host"
     
 ## Simulation results

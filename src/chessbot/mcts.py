@@ -5,6 +5,22 @@ import time
 from chessbot.evaluation import evaluate   
 
 
+PIECE_VALUES = {
+    chess.PAWN: 1,
+    chess.KNIGHT: 3,
+    chess.BISHOP: 3,
+    chess.ROOK: 5,
+    chess.QUEEN: 9,
+    chess.KING: 0,
+}
+CENTER_SQUARES = {chess.D4, chess.E4, chess.D5, chess.E5}
+EXTENDED_CENTER = {
+    chess.C3, chess.D3, chess.E3, chess.F3,
+    chess.C4, chess.F4, chess.C5, chess.F5,
+    chess.C6, chess.D6, chess.E6, chess.F6,
+}
+
+
 class MCTSNode:
     def __init__(self, board, parent=None, move=None, prior=0.0):
         self.board = board
@@ -20,7 +36,7 @@ class MCTSNode:
 # capture and are more likely to be good moves So expore them first later we use pop and pop takes the last element out.
         self.untried_moves = sorted(    
             board.legal_moves,
-            key=lambda m: (board.is_capture(m), board.gives_check(m))
+            key=lambda m: move_prior(board, m)
         )
 
     @property
@@ -50,13 +66,14 @@ class MCTSNode:
             raise ValueError("Node has no untried moves")
 
         move = self.untried_moves.pop()
-        next_board = self.board.copy(stack = False)
+        keep_stack = (self.parent is None)
+        next_board = self.board.copy(stack=keep_stack)
         next_board.push(move)
         child = MCTSNode(next_board, parent=self, move=move, prior=prior)
         self.children.append(child)
         return child
 
-    def select_child(self, c=1.414, c2=1.0):
+    def select_child(self, c=0.5, c2=0.8):
 # Unvisited children get top priority (10000), 
 # AND ties are broken by whichever child has the highest prior!
         if not self.children:
@@ -108,25 +125,55 @@ class MCTSNode:
 
 def move_prior(board, move):
     prior = 0.0
+    if move.promotion == chess.QUEEN:
+        prior += 1.0
+    elif move.promotion is not None:
+        prior -= 0.5
     if board.is_capture(move):
-        prior += 0.5
+        attacker = board.piece_type_at(move.from_square)
+        victim = chess.PAWN if board.is_en_passant(move) else board.piece_type_at(move.to_square)
+        if attacker and victim:
+            prior += 0.5 + 0.1 * (PIECE_VALUES[victim] - 0.5 * PIECE_VALUES[attacker])
+        else:
+            prior += 0.5
     if board.gives_check(move):
         prior += 0.3
-    return prior
+    if move.to_square in CENTER_SQUARES:
+        prior += 0.2
+    return max(0.0, prior)
+
+def positional_bonus(board):
+    bonus = 0
+    for sq, piece in board.piece_map().items():
+        sign = 1 if piece.color == chess.WHITE else -1
+        pt = piece.piece_type
+
+        if pt in (chess.PAWN, chess.KNIGHT, chess.BISHOP):
+            if sq in CENTER_SQUARES:
+                bonus += sign * 20
+            elif sq in EXTENDED_CENTER:
+                bonus += sign * 10
+
+        if pt == chess.PAWN:
+            rank = chess.square_rank(sq)
+            advancement = rank if piece.color == chess.WHITE else (7 - rank)
+            bonus += sign * (advancement * 5)
+
+    return bonus
 
 def simulate(board):
     """Value of the position for White, in [-1, 1]."""
     if board.is_checkmate():
         return -1.0 if board.turn == chess.WHITE else 1.0
-    if board.is_game_over(claim_draw=True):
+    if board.is_game_over(claim_draw=True) or board.is_repetition(2):
         return 0.0
-    return math.tanh(evaluate(board) / 400)
+    return math.tanh((evaluate(board) + positional_bonus(board)) / 400)
 
 def mcts_search(board, iterations=1000, time_limit=None):
     if iterations < 1:
         raise ValueError("Iterations must be at least 1")
 
-    root = MCTSNode(board.copy(stack=False))
+    root = MCTSNode(board.copy(stack=True))
     if root.is_terminal:
         return None
 
@@ -153,5 +200,3 @@ def mcts_search(board, iterations=1000, time_limit=None):
         node.backpropagate(result)
 
     return max(root.children, key=lambda child: child.visits).move
-
-
