@@ -35,6 +35,6 @@ All result files are stored in `tests/simulations/`.
 | [stockfish_vs_minimax.csv](tests/simulations/stockfish_vs_minimax.csv) | Stockfish vs raw minimax at depth 4 | Stockfish won both games |
 | [alpha_beta_vs_random_depth5.csv](tests/simulations/alpha_beta_vs_random_depth5.csv) | Alpha–beta at depth 5 vs random | Alpha–beta won both games |
 | [stockfish_vs_alpha_beta_depth5.csv](tests/simulations/stockfish_vs_alpha_beta_depth5.csv) | Stockfish vs alpha–beta at depth 5 | Stockfish won both games |
-| [mcts_vs_random_1000iter_1sec.csv](tests/simulations/mcts_vs_random_1000iter_1sec.csv) | MCTS vs random | 1 MCTS win and 1 draw by threefold repetition |
+| [mcts_vs_random_1000iter_1sec.csv](tests/simulations/mcts_vs_random_1000iter_1sec.csv) | MCTS vs random | MCTS won both games|
 | [stockfish_vs_mcts_1000iter_1sec.csv](tests/simulations/stockfish_vs_mcts_1000iter_1sec.csv) | Stockfish vs MCTS | Stockfish won both games |
 | [mcts_vs_alpha_beta_depth5_1000iter_1sec.csv](tests/simulations/mcts_vs_alpha_beta_depth5_1000iter_1sec.csv) | MCTS vs alpha–beta at depth 5 | Alpha–beta won both games |
